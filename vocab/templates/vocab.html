@@ -90,13 +90,16 @@
 <br />
 <div class="row">
   <div class="col-xs-6 text-center lead">
-   Words Found:
+   Words Found:					<!--Added a label for the found words section-->
 </div></div>
-<div id="words_found"></div>
+<div id="words_found"></div>			<!--This is a spot to stick those words. See JavaScript below-->
 <script>
 $("#entry").submit( function(event) {
    event.preventDefault();
   });
+
+//Beginning here, I have copied over the function from minijax, and modified it for the functionality we need
+
 $("#attempt").keyup(function(event) {
    var txt = $("#attempt").val();  // Current content of the input field
    var keycode = event.which;      // They key that just went up
@@ -108,26 +111,32 @@ $("#attempt").keyup(function(event) {
    // upper and lower case comes from state of shift key + key code,
    // so ignoring the shift key we get only the upper case letters.
 
-   if (! "ABCDEFGHIJKLMNOPQRSTUVWXYZ".includes(letter)) { return }
-
+   //if (! "ABCDEFGHIJKLMNOPQRSTUVWXYZ".includes(letter)) { return } I commented this line out because it seems unnecessary
+								//   With our game, this just causes a failed return error
+								//   if someone types a non-letter
    $.getJSON( "/_check", { text: txt }, 
               function(data) {
                 rsval = data.result.word_found;
-		done = data.result.is_done;
-                console.log("rsval: " + rsval)
-                if (rsval) {
-                   $("#response").html(txt);
-		   document.getElementById('words_found').innerHTML += ($("#attempt").val() + " ");
-		   $("#attempt").val("");
-		if(done){
-		   window.location.replace("/success");
-		}
-		}
+		done = data.result.is_done;		//read the json and store it
+                console.log("rsval: " + rsval)		//do some logging
+                   if (rsval) {
+                      $("#response").html(txt);
+		      document.getElementById('words_found').innerHTML += ($("#attempt").val() + " ");//If we find a word,
+		      $("#attempt").val("");							//      we print it in
+		         if(done){								//      the area we set up, then
+		            window.location.replace("/success");				//      clear the field.
+		         }									//      Redirect if we're done
+		   }
 		}
            );
    });
 </script>
 <br />
+<!--
+
+		I have commented out this section because it's unused 	
+
+
 
 {% if session.matches|length is not equalto 0  %}
 <h2>You found </h2>
@@ -147,7 +156,7 @@ $("#attempt").keyup(function(event) {
     {% endfor %}
   {% endif %}
 {% endwith %}
-
+-->
 
 
  </div> <!-- container -->

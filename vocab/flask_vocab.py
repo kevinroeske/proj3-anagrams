@@ -2,6 +2,7 @@
 Flask web site with vocabulary matching game
 (identify vocabulary words that can be made 
 from a scrambled string)
+Mostly written by (I assume) Michael Young, see coments in the section added by Kevin Roeske
 """
 
 import flask
@@ -68,8 +69,8 @@ def success():
 
 #######################
 # Form handler.
-# CIS 322 note:
-#   You'll need to change this to a
+# 
+#   I have changed this to a
 #   a JSON request handler
 #######################
 
@@ -100,30 +101,21 @@ def check():
         # Cool, they found a new word
         matches.append(text)
         flask.session["matches"] = matches
-        app.logger.info("Found a word")
-        rslt = {"word_found": True, "is_done": False};
-#    elif text in matches:
-#        flask.flash("You already found {}".format(text))
-#    elif not matched:
-#        flask.flash("{} isn't in the list of words".format(text))
-#    elif not in_jumble:
-#        flask.flash(
-#            '"{}" can\'t be made from the letters {}'.format(text, jumble))
-#    else:
-#        app.logger.debug("This case shouldn't happen!")
-#        assert False  # Raises AssertionError
+        app.logger.info("Found a word")                 #most of this is code I copied from the minijax example, but I have modified
+        rslt = {"word_found": True, "is_done": False};  #it for what we need here. We do some logging for debugging purposes
 
-    # Choose page:  Solved enough, or keep going?
+    # Choose response values:  Solved enough, or keep going?
     if len(matches) >= flask.session["target_count"]:
         app.logger.info("DONE!")
         rslt["is_done"] = True
-        return flask.jsonify(result=rslt)
+        return flask.jsonify(result=rslt)               #Flip the is_done boolean if the count is enough
     else:
-        app.logger.info("Keep going")
-        return flask.jsonify(result=rslt)
+        app.logger.info("Keep going")                   #Either way, let the client side know what's going on
+        return flask.jsonify(result=rslt)               #by sending over a json object
 
 
-
+#My code ends here 
+#-Kevin
 
 ###############
 # AJAX request handlers
